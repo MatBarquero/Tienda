@@ -68,8 +68,53 @@
             <div th:replace="~{consultas/fragmentos :: formConsulta('primary',#{consultas.derivadas},'/consultas/consultaDerivada')}"/>
             <div th:replace="~{consultas/fragmentos :: formConsulta('warning',#{consultas.jpql},'/consultas/consultaJPQL')}"/>
             <div th:replace="~{consultas/fragmentos :: formConsulta('success',#{consultas.sql},'/consultas/consultaSQL')}"/>
-            <div class='card'><p>Acá va su Práctica #2</p></div>
+            <div th:replace="~{consultas/fragmentos :: formConsultaFiltro('info',#{consultas.extra},'/consultas/consultaCategoriaFiltro')}"/>
         </section>
+
+        <!-- Practica 2, tarjeta para la consulta de productos segun cantidad -->
+        <div th:fragment='formConsultaFiltro(colorForm, textoForm, urlForm)'>
+            <form method="post" th:action='@{${urlForm}}' class='was-validated'>
+                <div class='card p-2'>
+                    <div class="card-header text-center text-white" th:classappend="${'bg-'+colorForm}">
+                        <h5>[[${textoForm}]]</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class='mb-3'>
+                            <label>[[#{consultas.minimo}]]</label>
+                            <input type="number" name='minimo' th:value='${minimo}'
+                                   class='form-control' min="1" step="1" required/>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type='submit' class='btn text-white' th:classappend="${'btn-'+colorForm}">
+                            <i class='fa-solid fa-magnifying-glass'></i> [[${textoForm}]]
+                        </button>
+                    </div>
+                    <div th:if="${categoriasFiltro != null}" class="p-2">
+                        <table class="table table-sm table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>[[#{consultas.categoria}]]</th>
+                                    <th class="text-end">[[#{consultas.cantidad}]]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="c : ${categoriasFiltro}">
+                                    <td>[[${c.descripcion}]]</td>
+                                    <td class="text-end">
+                                        <span class="badge text-bg-success"
+                                              th:text="${#lists.size(c.productos.?[activo])}">0</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(categoriasFiltro)}">
+                                    <td colspan="2" class="text-center text-muted">[[#{consultas.sinResultados}]]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </form>
+        </div>
 
         <div th:fragment='formConsulta(colorForm, textoForm, urlForm)'>
             <form method="post" th:action='@{${urlForm}}' class='was-validated'>

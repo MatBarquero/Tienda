@@ -33,7 +33,13 @@ public class CategoriaService {
     public Optional<Categoria> getCategoria(Integer idCategoria) {
         return categoriaRepository.findById(idCategoria);
     }
-
+    
+    //practica 2, metodo para leer la bd y revisar los productos con x cantidad
+    @Transactional(readOnly = true)
+    public List<Categoria> consultaCategoriaFiltro(Long minimo) {
+        return categoriaRepository.consultaCategoriaFiltro(minimo);
+    }
+    
     @Transactional
     public void save(Categoria categoria, MultipartFile imagenFile) {
         categoria = categoriaRepository.save(categoria);
